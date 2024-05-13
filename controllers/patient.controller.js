@@ -2,14 +2,14 @@ const Patient = require("../models/Patient");
 
 const createReport = async(req,res) => {
     try {
-        let {name,age,address,phone,examined_by,examined_for_disease,examined_date,patient_result,test_result} = req.body;
-        console.log(req.body);
-        if(!name || !age || !address || !phone || !examined_by || !examined_for_disease || !examined_date || !patient_result) {
+        let {name,age,gender,address,phone,examined_by,examined_for_disease,examined_date,patient_result,test_result} = req.body;
+        if(!name || !age || !gender || !address || !phone || !examined_by || !examined_for_disease || !examined_date || !patient_result) {
             throw new Error('Some Fields Are Missing')
         }
         const newReport = new Patient({
             name: name,
             age:age,
+            gender:gender,
             address:address,
             phone:phone,
             examined_by:examined_by,
@@ -50,8 +50,18 @@ const getReports = async (req,res) => {
         res.status(500).json(error.message)
     }
 }
+const getReportDeatils = async (req,res) => {
+    try {
+        let reportData = await Patient.findById(req.params.id).sort({ createdAt: -1 }).populate('lab_id')
+        if(!reportData) throw new Error("No Report Details Found");
+        res.status(200).json(reportData);
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+}
 module.exports = {
     createReport:createReport,
     getReports:getReports,
-    updateReport:updateReport
+    getReportDeatils:getReportDeatils,
+    updateReport:updateReport,
 }

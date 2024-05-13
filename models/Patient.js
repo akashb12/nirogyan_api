@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const PatientSchema = new mongoose.Schema({
     name:{type:String,required:true},
     age:{type:String,required:true},
+    gender:{type:String,required:true},
     address:{type:String,required:true},
     phone:{type:String,required:true},
     examined_by:{type:String,required:true},

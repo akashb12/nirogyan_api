@@ -13,5 +13,6 @@ router.post('/user/logout', userController.logout);
 router.post('/patient/createReport',verifyToken, patientController.createReport);
 router.put('/patient/updateReport/:id',verifyToken, patientController.updateReport);
 router.get('/patient/reports',verifyToken, patientController.getReports);
+router.get('/patient/report/:id',verifyToken, patientController.getReportDeatils);
 
 module.exports = router;

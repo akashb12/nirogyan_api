@@ -7,21 +7,24 @@ const registerLab = async (req, res) => {
         if (!req.body.name || !req.body.phone || !req.body.password || !req.body.address) {
             throw new Error("Some fields are missing")
         }
-        let findLab = await User.findOne({ lab_name: req.body.name });
+        let findLab = await User.findOne({  $or: [
+            { lab_name: req.body.name },
+            { phone: req.body.phone },
+        ] });
         if (findLab) {
-            throw new Error('Lab with similar name already exists!');
+            throw new Error('Lab with similar details already exists!');
         }
         const saltRounds = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(req.body.password, saltRounds);
         const newUser = new User({
-            lab_name: req.body.name,
+            lab_name: req.body.name.toLowerCase(),
             phone: req.body.phone,
             password: hash,
             address:req.body.address
         })
         const savedUser = await newUser.save();
         const { password, ...data } = savedUser._doc;
-        res.status(201).json(others);
+        res.status(201).json(data);
     } catch (error) {
         res.status(500).json(error.message)
     }
@@ -29,7 +32,7 @@ const registerLab = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        let findLab = await User.findOne({ lab_name: req.body.name });
+        let findLab = await User.findOne({ lab_name: req.body.name.toLowerCase() });
         if (!findLab) {
             throw new Error('Invalid Lab Details!');
         }
