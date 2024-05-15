@@ -44,6 +44,7 @@ const login = async (req, res) => {
             id:findLab._id
         },process.env.JWT_SECRET_KEY,{expiresIn:'3d'})
         const {password,...data} = findLab._doc;
+        data.token = accessToken;
         res.cookie("token", accessToken, { httpOnly: false, secure: true, sameSite: "none" });
         res.status(200).json({data})
     } catch (error) {
